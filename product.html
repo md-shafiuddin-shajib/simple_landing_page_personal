@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Order Now — Test Product</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0b0b18;
+      --card: #13132a;
+      --border: rgba(255,255,255,0.08);
+      --indigo: #6366f1;
+      --indigo-light: #818cf8;
+      --purple: #a855f7;
+      --pink: #f472b6;
+      --green: #4ade80;
+      --text: #e2e8f0;
+      --muted: #64748b;
+      --input-bg: #0b0b18;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 48px 16px 64px;
+    }
+
+    /* Background glow */
+    body::before {
+      content: '';
+      position: fixed;
+      top: -200px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(99,102,241,0.12) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .badge {
+      display: inline-block;
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--indigo-light);
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 800;
+      background: linear-gradient(135deg, #c7d2fe, #a5b4fc, #f0abfc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1.15;
+    }
+
+    .wrapper {
+      width: 100%;
+      max-width: 480px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Product Card */
+    .product-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+      margin-bottom: 20px;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.4);
+    }
+
+    .product-image-wrap {
+      position: relative;
+      width: 100%;
+      height: 220px;
+      background: #1a1a35;
+      overflow: hidden;
+    }
+
+    .product-image-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.9;
+      display: block;
+    }
+
+    .product-image-wrap::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, var(--card) 0%, transparent 60%);
+    }
+
+    .product-info {
+      padding: 20px 24px 24px;
+    }
+
+    .product-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .product-name {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .price-badge {
+      flex-shrink: 0;
+      background: rgba(99,102,241,0.15);
+      border: 1px solid rgba(129,140,248,0.3);
+      color: var(--indigo-light);
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 5px 14px;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+
+    .product-desc {
+      color: var(--muted);
+      font-size: 0.875rem;
+      line-height: 1.7;
+    }
+
+    /* Order Form Card */
+    .form-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 28px 24px;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.4);
+    }
+
+    .form-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 22px;
+    }
+
+    .field {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: #94a3b8;
+      margin-bottom: 7px;
+    }
+
+    label span { color: var(--pink); }
+
+    input[type="text"],
+    input[type="tel"] {
+      width: 100%;
+      background: var(--input-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 13px 16px;
+      color: #fff;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    input::placeholder { color: #334155; }
+
+    input:focus {
+      border-color: rgba(99,102,241,0.5);
+      box-shadow: 0 0 0 3px rgba(99,102,241,0.12);
+    }
+
+    input.error {
+      border-color: rgba(244,114,182,0.6);
+      box-shadow: 0 0 0 3px rgba(244,114,182,0.08);
+    }
+
+    .error-msg {
+      color: var(--pink);
+      font-size: 0.76rem;
+      margin-top: 6px;
+      display: none;
+    }
+
+    .error-msg.visible { display: block; }
+
+    .divider {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 0;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      margin-bottom: 18px;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .divider .total {
+      color: #fff;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 1.05rem;
+    }
+
+    /* Button */
+    .btn-order {
+      width: 100%;
+      padding: 15px;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--indigo), var(--purple));
+      color: #fff;
+      font-family: 'Syne', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 8px 30px rgba(99,102,241,0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-order:hover {
+      opacity: 0.9;
+      box-shadow: 0 12px 35px rgba(99,102,241,0.35);
+    }
+
+    .btn-order:active { transform: scale(0.98); }
+
+    .btn-order:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Spinner */
+    .spinner {
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255,255,255,0.25);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: none;
+    }
+
+    .spinner.visible { display: block; }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Success State */
+    .success-state {
+      display: none;
+      text-align: center;
+      padding: 32px 0 16px;
+      animation: fadeUp 0.4s ease forwards;
+    }
+
+    .success-state.visible { display: block; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .check-circle {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: rgba(74,222,128,0.1);
+      border: 1px solid rgba(74,222,128,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 18px;
+    }
+
+    .check-circle svg {
+      width: 32px;
+      height: 32px;
+      stroke: var(--green);
+    }
+
+    .success-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+
+    .success-msg {
+      color: var(--muted);
+      font-size: 0.875rem;
+      line-height: 1.7;
+    }
+
+    .success-msg strong { color: var(--indigo-light); }
+
+    /* Footer */
+    .footer-note {
+      text-align: center;
+      color: #2d3748;
+      font-size: 0.75rem;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <p class="badge">⚡ Limited Offer</p>
+    <h1>Place Your Order</h1>
+  </header>
+
+  <div class="wrapper">
+
+    <!-- Product Card -->
+    <div class="product-card">
+      <div class="product-image-wrap">
+        <img src="https://placehold.co/600x400/1a1a35/818cf8?text=Test+Product" alt="Test Product" />
+      </div>
+      <div class="product-info">
+        <div class="product-header">
+          <h2 class="product-name">Test Product</h2>
+          <span class="price-badge">1000 BDT</span>
+        </div>
+        <p class="product-desc">
+          A premium quality product crafted with care. Perfect for everyday use — reliable, stylish, and built to last. Order now and get it delivered to your doorstep.
+        </p>
+      </div>
+    </div>
+
+    <!-- Order Form Card -->
+    <div class="form-card">
+      <p class="form-title">Your Details</p>
+
+      <form id="orderForm" novalidate>
+
+        <!-- Name Field -->
+        <div class="field">
+          <label for="customerName">Customer Name <span>*</span></label>
+          <input type="text" id="customerName" placeholder="e.g. Rahim Uddin" autocomplete="name" />
+          <p class="error-msg" id="nameError">Please enter your name.</p>
+        </div>
+
+        <!-- Phone Field -->
+        <div class="field">
+          <label for="phoneNumber">Phone Number <span>*</span></label>
+          <input type="tel" id="phoneNumber" placeholder="e.g. 01XXXXXXXXX" autocomplete="tel" />
+          <p class="error-msg" id="phoneError">Please enter a valid phone number.</p>
+        </div>
+
+        <!-- Total -->
+        <div class="divider">
+          <span>Total Amount</span>
+          <span class="total">1,000 BDT</span>
+        </div>
+
+        <!-- Submit -->
+        <button type="submit" class="btn-order" id="orderBtn">
+          <span class="spinner" id="spinner"></span>
+          <span id="btnText">Order Now →</span>
+        </button>
+
+      </form>
+
+      <!-- Success State -->
+      <div class="success-state" id="successState">
+        <div class="check-circle">
+          <svg fill="none" viewBox="0 0 24 24" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+          </svg>
+        </div>
+        <p class="success-title">Order Placed! 🎉</p>
+        <p class="success-msg">
+          Order placed successfully!<br />
+          <strong>We will contact you soon.</strong>
+        </p>
+      </div>
+
+    </div>
+
+    <p class="footer-note">No payment needed now &middot; Cash on delivery</p>
+  </div>
+
+  <script>
+    const form       = document.getElementById('orderForm');
+    const nameInput  = document.getElementById('customerName');
+    const phoneInput = document.getElementById('phoneNumber');
+    const nameError  = document.getElementById('nameError');
+    const phoneError = document.getElementById('phoneError');
+    const orderBtn   = document.getElementById('orderBtn');
+    const btnText    = document.getElementById('btnText');
+    const spinner    = document.getElementById('spinner');
+    const successState = document.getElementById('successState');
+
+    const PRODUCT = {
+      name: 'Test Product',
+      price: '1000 BDT',
+    };
+
+    function validateName() {
+      const val = nameInput.value.trim();
+      if (!val) {
+        nameError.textContent = 'Customer name is required.';
+        nameError.classList.add('visible');
+        nameInput.classList.add('error');
+        return false;
+      }
+      if (val.length < 2) {
+        nameError.textContent = 'Name must be at least 2 characters.';
+        nameError.classList.add('visible');
+        nameInput.classList.add('error');
+        return false;
+      }
+      nameError.classList.remove('visible');
+      nameInput.classList.remove('error');
+      return true;
+    }
+
+    function validatePhone() {
+      const val = phoneInput.value.trim();
+      const phoneRegex = /^[0-9+\-\s]{7,15}$/;
+      if (!val) {
+        phoneError.textContent = 'Phone number is required.';
+        phoneError.classList.add('visible');
+        phoneInput.classList.add('error');
+        return false;
+      }
+      if (!phoneRegex.test(val)) {
+        phoneError.textContent = 'Enter a valid phone number (7–15 digits).';
+        phoneError.classList.add('visible');
+        phoneInput.classList.add('error');
+        return false;
+      }
+      phoneError.classList.remove('visible');
+      phoneInput.classList.remove('error');
+      return true;
+    }
+
+    // Live validation on blur
+    nameInput.addEventListener('blur', validateName);
+    phoneInput.addEventListener('blur', validatePhone);
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const nameOk  = validateName();
+      const phoneOk = validatePhone();
+
+      if (!nameOk || !phoneOk) return;
+
+      // Show loading
+      orderBtn.disabled = true;
+      spinner.classList.add('visible');
+      btnText.textContent = 'Placing Order…';
+
+      setTimeout(function () {
+        const order = {
+          product: PRODUCT.name,
+          price: PRODUCT.price,
+          customerName: nameInput.value.trim(),
+          phoneNumber: phoneInput.value.trim(),
+          orderedAt: new Date().toISOString(),
+        };
+
+        console.log('📦 Order Placed:', order);
+
+        // Hide form, show success
+        form.style.display = 'none';
+        successState.classList.add('visible');
+
+      }, 1200);
+    });
+  </script>
+
+</body>
+</html>
